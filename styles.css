@@ -8,8 +8,10 @@ body {
     box-sizing: border-box;
     background-color: rgb(255, 255, 255);
     color: #333;
+    border: 3px solid;
+    border-image: linear-gradient(45deg, #9333ea, #7c3aed, #6366f1) 1;
+    border-radius: 8px;
 }
-
 h1 {
     font-size: 18px;
     color: blueviolet;
@@ -19,12 +21,16 @@ h1 {
 
 h3 {
     font-size: 16px;
-    color: rgb(190, 23, 208); /* matching green */
-    margin-top: 20px;
+    color: rgb(190, 23, 208); 
+    margin-top: 10px;
     margin-bottom: 10px;
     font-weight: 600;
     text-align: center;
     letter-spacing: 0.03em;
+}
+a {
+    color: #007bff;
+    text-decoration: none;
 }
 
 #createGistButton {
@@ -49,10 +55,6 @@ h3 {
     background-color: #1e7e34; 
 }
 
-#createGistButton::before {
-    content: "✅";
-}
-
 .text-container {
     margin-top: 15px;
     height: 150px;
@@ -72,6 +74,10 @@ h3 {
     flex-direction: column;
     justify-content: space-between;
     height: 100%;
+}
+
+.recent-gists-container{
+    display: none;
 }
 
 @media (max-width: 480px) {
