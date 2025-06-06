@@ -1,0 +1,47 @@
+{
+    "manifest_version": 3,
+    "name": "Gist from Selection",
+    "description": "Automatically create a GitHub Gist from the selected code.",
+    "version": "1.0",
+    "permissions": [
+      "activeTab",
+      "storage",
+      "scripting",
+      "identity"    
+    ],
+     "oauth2": {
+    "client_id": "Ov23lil5wqiBdGXiK4oM",
+    "scopes": ["gist"]
+  },
+    "background": {
+      "service_worker": "background.js"
+    },
+    "action": {
+      "default_popup": "popup.html",
+      "default_icon": {
+        "16": "images/icon.png",
+        "48": "images/icon.png",
+        "128": "images/icon.png"
+      }
+    },
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js": ["content_script.js"]
+      }
+    ],
+    "web_accessible_resources":[
+        {
+            "resources": ["libs/highlight/highlight.min.js"],
+            "matches": ["<all_urls>"]
+        }
+    ],
+    "content_security_policy": {
+      "extension_pages": "script-src 'self'; object-src 'self'; style-src 'self';"
+    },
+    "icons": {
+      "16": "images/icon.png",
+      "48": "images/icon.png",
+      "128": "images/icon.png"
+    }
+  }

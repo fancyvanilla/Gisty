@@ -1,0 +1,23 @@
+{
+  "javascript": ".js",
+  "python": ".py",
+  "html": ".html",
+  "css": ".css",
+  "java": ".java",
+  "ruby": ".rb",
+  "php": ".php",
+  "c": ".c",
+  "cpp": ".cpp",
+  "go": ".go",
+  "typescript": ".ts",
+  "yaml": ".yaml",
+  "json": ".json",
+  "swift": ".swift",
+  "kotlin": ".kt",
+  "rust": ".rs",
+  "bash": ".sh",
+  "sql": ".sql",
+  "markdown": ".md",
+  "xml": ".xml",
+  "plaintext": ".txt"
+}
