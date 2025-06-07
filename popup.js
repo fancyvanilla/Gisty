@@ -3,13 +3,14 @@ const code_container = document.getElementById('selectedText');
 const githubAuthStatusContainer=document.getElementById('githtubAuthStatus')
 const createGistButton = document.getElementById('createGistButton');
 const recentGistsContainer = document.getElementById('recentGistsContainer');
-
+const loadingSpinner = document.getElementById('loading-spinner');
 chrome.storage.sync.get(['github_token'], (result) => {
+  loadingSpinner.style.display = 'none';
   const token = result.github_token;
   if (token) {
-    githubAuthStatusContainer.innerHTML = "🚀 You are authenticated with GitHub.";
-    createGistButton.innerHTML = "Create Gist";
-    code_container.style.display = 'block';
+    githubAuthStatusContainer.textContent = "🚀 You are authenticated with GitHub.";
+    createGistButton.textContent = "Create Gist";
+    code_container.style.display ='block';
 
     //show selected text
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -25,9 +26,9 @@ chrome.storage.sync.get(['github_token'], (result) => {
         }
         let code = injectedResults[0].result.trim();
         if (code.length == 0) {
-          code_container.innerHTML = "Nothing is selected";
+          code_container.textContent = "Nothing is selected";
         } else {
-          code_container.innerHTML=code;
+          code_container.textContent=code;
           code_container.style.whiteSpace = 'pre-wrap'; 
         }
       });
@@ -38,10 +39,10 @@ chrome.storage.sync.get(['github_token'], (result) => {
     const gist = result.recentGistUrl;
     if (gist) {
         recentGistsContainer.style.display = 'block';
-        recentGistsContainer.innerHTML = '<h3>History</h3>';
         const link = document.createElement('a');
         link.href = gist.url;
         link.target = '_blank';
+        link.className = 'recent-gist-link';
         let differnceInMinutes = Math.floor((new Date() - new Date(gist.time)) / 60000);
         if (differnceInMinutes < 1) {
             link.textContent = `🔗 ${gist.filename} (just now)`;
@@ -57,17 +58,12 @@ chrome.storage.sync.get(['github_token'], (result) => {
         recentGistsContainer.appendChild(link);
         recentGistsContainer.appendChild(document.createElement('br'));
     } else {
-      recentGistsContainer.innerHTML = `
-        <div style="text-align:center; color:#888; padding:10px;">
-          <p>✨ You haven't created your first Gist yet!</p>
-          <p>Highlight some code on any page and click <b>Create Gist</b> to get started.</p>
-        </div>
-      `;
+      recentGistsContainer.textContent = "No recent Gists found.";
     }
   });
   } else {
-      githubAuthStatusContainer.innerHTML = "⚠️ You are not authenticated with GitHub."
-      createGistButton.innerHTML = "Authenticate with GitHub";
+      githubAuthStatusContainer.textContent = "⚠️ You are not authenticated with GitHub."
+      createGistButton.textContent = "Authenticate with GitHub";
       code_container.style.display = 'none';
     }
   })
@@ -98,11 +94,19 @@ createGistButton.addEventListener('click', () => {
             if (code.length == 0) return ;
             const result=hljs.highlightAuto(code); 
             const lang =result.language;
-                code_container.innerHTML = `<span>⏳ Creating your Gist for <b>${lang}</b>...</span>`;
+              code_container.textContent = `⏳ Creating your Gist for ${lang}`;
               const filename = await generateFileName(lang);
               githubAuth.createGist(code, filename,token).then(gistUrl => {
                 navigator.clipboard.writeText(gistUrl).then(() => {
-                code_container.innerHTML = `<a href="${gistUrl}" target="_blank">🔗${filename}</a> <span>(Copied to clipboard!)</span>`;
+                  code_container.textContent = `✅ Gist created successfully!`;
+                  const url=document.createElement('a');
+                  const span=document.createElement('span');
+                  url.href = gistUrl;
+                  url.target = '_blank';
+                  url.textContent = `🔗${filename}`
+                  span.textContent = " (Copied to clipboard!)";
+                  code_container.appendChild(url);
+                  code_container.appendChild(span);
                 }).catch(err => {
                   console.error('Failed to copy:', err);
                   return;
@@ -112,9 +116,9 @@ createGistButton.addEventListener('click', () => {
                 chrome.storage.local.set({"recentGistUrl":recentGist})
               }).catch(error => {
                 if (error.status==403 && error.message.includes("rate limit")){
-                      code_container.innerHTML = "⏰ GitHub rate limit reached. Try again in an hour.";
+                      code_container.textContent = "⏰ GitHub rate limit reached. Try again in an hour.";
                   } else{
-                      code_container.innerHTML = "❌ Failed to create Gist. Please try again.";
+                      code_container.textContent = "❌ Failed to create Gist. Please try again.";
                   }
           })
         }  

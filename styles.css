@@ -1,7 +1,7 @@
 body {
     font-family: Arial, sans-serif;
     margin: 0;
-    padding: 20px;
+    padding: 10px;
     max-width: 400px;
     min-width: 300px;
     overflow: hidden;
@@ -13,14 +13,14 @@ body {
     border-radius: 8px;
 }
 h1 {
-    font-size: 18px;
+    font-size: 16px;
     color: blueviolet;
     margin-bottom: 10px;
     text-align: center;
 }
 
 h3 {
-    font-size: 16px;
+    font-size: 14px;
     color: rgb(190, 23, 208); 
     margin-top: 10px;
     margin-bottom: 10px;
@@ -40,7 +40,7 @@ a {
     padding: 12px;
     width: 100%;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 14px;
     border-radius: 6px;
     transition: background-color 0.3s ease;
     margin-top: 10px;
@@ -79,22 +79,35 @@ a {
 .recent-gists-container{
     display: none;
 }
-
-@media (max-width: 480px) {
-    body {
-        padding: 10px;
-        max-width: 100%;
-    }
-
-    h1 {
-        font-size: 16px;
-    }
-
-    h3 {
-        font-size: 14px;
-    }
-
-    #createGistButton {
-        font-size: 14px;
-    }
+.recent-gist-link{
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 35px;
 }
+
+#loading-spinner {
+    width: 40px;
+    height: 40px;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  #loading-spinner::before {
+    content: "";
+    display: block;
+    width: 40px;
+    height: 40px;
+    border: 4px solid #ccc;
+    border-top-color: #2196f3;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
