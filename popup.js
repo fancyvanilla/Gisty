@@ -4,6 +4,7 @@ const githubAuthStatusContainer=document.getElementById('githtubAuthStatus')
 const createGistButton = document.getElementById('createGistButton');
 const recentGistsContainer = document.getElementById('recentGistsContainer');
 const loadingSpinner = document.getElementById('loading-spinner');
+const authUrl="https://fancyvanilla.github.io/"
 chrome.storage.sync.get(['github_token'], (result) => {
   loadingSpinner.style.display = 'none';
   const token = result.github_token;
@@ -43,7 +44,9 @@ chrome.storage.sync.get(['github_token'], (result) => {
         link.href = gist.url;
         link.target = '_blank';
         link.className = 'recent-gist-link';
-        let differnceInMinutes = Math.floor((new Date() - new Date(gist.time)) / 60000);
+        let gistDate=new Date(gist.time).getTime()
+        let nowDate = Date.now();
+        let differnceInMinutes = Math.floor(Math.abs(nowDate - gistDate) / 60000);
         if (differnceInMinutes < 1) {
             link.textContent = `🔗 ${gist.filename} (just now)`;
         } else if (differnceInMinutes < 60) {
@@ -52,8 +55,7 @@ chrome.storage.sync.get(['github_token'], (result) => {
         else if (differnceInMinutes < 1440) {
             link.textContent = `🔗 ${gist.filename} (${Math.floor(differnceInMinutes / 60)} hour${Math.floor(differnceInMinutes / 60) > 1 ? 's' : ''} ago)`;
         } else {
-            // For more than a day, show the time
-            link.textContent = `🔗 ${gist.filename} (${new Date(gist.time).toLocaleTimeString()})`;
+            link.textContent = `🔗 ${gist.filename} (${new Date(gist.time).toLocaleDateString()})`;
         }
         recentGistsContainer.appendChild(link);
         recentGistsContainer.appendChild(document.createElement('br'));
@@ -77,7 +79,7 @@ createGistButton.addEventListener('click', () => {
       githubAuth.getDeviceCode().then(deviceData => {
          chrome.runtime.sendMessage({ type: 'AUTHENTICATE_GITHUB', code:deviceData })
          chrome.tabs.create({
-          url:`https://fancyvanilla.github.io/?code=${deviceData.user_code}&verification_uri=${encodeURIComponent(deviceData.verification_uri)}&expires_in=${deviceData.expires_in}`
+          url:authUrl+`?code=${deviceData.user_code}&verification_uri=${encodeURIComponent(deviceData.verification_uri)}&expires_in=${deviceData.expires_in}`
          })
       })
     } 
@@ -98,7 +100,6 @@ createGistButton.addEventListener('click', () => {
               const filename = await generateFileName(lang);
               githubAuth.createGist(code, filename,token).then(gistUrl => {
                 navigator.clipboard.writeText(gistUrl).then(() => {
-                  code_container.textContent = `✅ Gist created successfully!`;
                   const url=document.createElement('a');
                   const span=document.createElement('span');
                   url.href = gistUrl;
@@ -111,7 +112,8 @@ createGistButton.addEventListener('click', () => {
                   console.error('Failed to copy:', err);
                   return;
                 });
-                let currentTime = new Date().toLocaleString();
+                let currentTime = new Date().toISOString()
+                code_container.textContent = `✅ Gist created successfully! ${filename} at ${currentTime}`;
                 let recentGist={ url: gistUrl, filename:filename, time: currentTime, lang: lang};
                 chrome.storage.local.set({"recentGistUrl":recentGist})
               }).catch(error => {
