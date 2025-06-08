@@ -15,6 +15,14 @@ Useful for sharing snippets quickly without switching tabs or pasting manually.
 
 ---
 
+## Features
+
+- Language detection powered by [Highlight.js](https://highlightjs.org/)
+- No backend – everything happens in your browser
+- GitHub token stored securely in Chrome Sync Storage
+
+---
+
 ## Install
 
 1. Clone or download this repo
@@ -34,14 +42,6 @@ Licensed for free use with attribution: [Flaticon License](https://www.flaticon.
 
 ---
 
-## Notes
-
-- Requires a GitHub token with Gist permissions
-- The token is stored in Chrome storage (synced across devices)
-- No backend/server involved
-
----
-
 ## Contribute
 
-Feel free to open issues or pull requests.
+Feel free to open issues or PRs for suggestions, improvements, or bug fixes.
